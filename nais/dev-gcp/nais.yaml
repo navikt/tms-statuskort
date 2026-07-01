@@ -1,0 +1,62 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: tms-statuskort
+  namespace: min-side
+  labels:
+    team: min-side
+spec:
+  image: "{{ version }}"
+  port: 8080
+  liveness:
+    path: /isalive
+    initialDelay: 30
+  readiness:
+    path: /isready
+    initialDelay: 15
+  prometheus:
+    enabled: true
+    path: /metrics
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+  accessPolicy:
+    outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
+  leaderElection: true
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 50
+  kafka:
+    pool: nav-dev
+  gcp:
+    sqlInstances:
+      - name: statuskort
+        type: POSTGRES_15
+        tier: db-f1-micro
+        diskType: SSD
+        diskSize: 10
+        diskAutoresize: false
+        autoBackupHour: 3
+        databases:
+          - name: statuskort
+            envVarPrefix: DB
+        maintenance:
+          day: 1
+          hour: 4
+        cascadingDelete: false
+  resources:
+    requests:
+      cpu: "20m"
+      memory: 256Mi
+    limits:
+      memory: 1024Mi
+  env:
+    - name: KAFKA_GROUP_ID
+      value: "statuskort-01"
+    - name: STATUSKORT_TOPIC
+      value: "min-side.statuskort-v1"
