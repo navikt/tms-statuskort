@@ -6,7 +6,7 @@ create table statuskort
     sensitivitet text not null,
     produsent    jsonb not null,
     aktiv        bool not null,
-    inaktivert   timestamp with time zone not null,
+    inaktivert   timestamp with time zone,
     opprettet    timestamp with time zone not null,
     sistEndret   timestamp with time zone not null
 );

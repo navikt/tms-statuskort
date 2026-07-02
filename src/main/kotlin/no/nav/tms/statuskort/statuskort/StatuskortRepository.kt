@@ -1,7 +1,110 @@
 package no.nav.tms.statuskort.statuskort
 
+import kotliquery.Row
+import kotliquery.queryOf
 import no.nav.tms.common.postgres.PostgresDatabase
 
 class StatuskortRepository(private val database: PostgresDatabase) {
 
+    private val objectMapper = defaultObjectMapper()
+
+    fun opprettStatuskort(statuskort: Statuskort) {
+        database.update {
+            queryOf(
+                """
+                    insert into statuskort(
+                        statuskortId,
+                        ident,
+                        innhold,
+                        sensitivitet,
+                        produsent,
+                        aktiv,
+                        inaktivert,
+                        opprettet,
+                        sistEndret
+                    ) values (
+                        :statuskortId,
+                        :ident,
+                        :innhold,
+                        :sensitivitet,
+                        :produsent,
+                        :aktiv,
+                        :inaktivert,
+                        :opprettet,
+                        :sistEndret
+                    )
+                """,
+                mapOf(
+                    "statuskortId" to statuskort.statuskortId,
+                    "ident" to statuskort.ident,
+                    "innhold" to statuskort.innhold.toJsonb(objectMapper),
+                    "sensitivitet" to statuskort.sensitivitet.name.lowercase(),
+                    "produsent" to statuskort.produsent.toJsonb(objectMapper),
+                    "aktiv" to statuskort.aktiv,
+                    "opprettet" to statuskort.opprettet,
+                    "sistEndret" to statuskort.sistEndret,
+                    "inaktivert" to statuskort.inaktivert,
+                    )
+            )
+        }
+    }
+
+    fun oppdaterInnhold(statuskortId: String, innhold: Innhold) {
+        database.update {
+            queryOf(
+                """
+                    update statuskort set
+                        innhold = :innhold,
+                        sistEndret = :sistEndret
+                    where statuskortId = :statuskortId
+                """,
+                mapOf(
+                    "statuskortId" to statuskortId,
+                    "innhold" to innhold.toJsonb(objectMapper),
+                    "sistEndret" to nowAtUtc(),
+                )
+            )
+        }
+    }
+
+    fun inaktiverStatuskort(statuskortId: String) {
+        val tidspunkt = nowAtUtc()
+        database.update {
+            queryOf(
+                """
+                    update statuskort set
+                        aktiv = false,
+                        inaktivert = :tidspunkt,
+                        sistEndret = :tidspunkt
+                    where statuskortId = :statuskortId and aktiv = true
+                """,
+                mapOf(
+                    "statuskortId" to statuskortId,
+                    "tidspunkt" to tidspunkt,
+                )
+            )
+        }
+    }
+
+    fun hentStatuskort(statuskortId: String): Statuskort? =
+        database.singleOrNull {
+            queryOf(
+                "select * from statuskort where statuskortId = :statuskortId",
+                mapOf("statuskortId" to statuskortId)
+            ).map(toStatuskort())
+        }
+
+    private fun toStatuskort(): (Row) -> Statuskort = { row ->
+        Statuskort(
+            statuskortId = row.string("statuskortId"),
+            ident = row.string("ident"),
+            innhold = row.json("innhold", objectMapper),
+            sensitivitet = parseSensitivitet(row.string("sensitivitet")),
+            produsent = row.json("produsent", objectMapper),
+            aktiv = row.boolean("aktiv"),
+            inaktivert = row.zonedDateTimeOrNull("inaktivert"),
+            opprettet = row.zonedDateTime("opprettet"),
+            sistEndret = row.zonedDateTime("sistEndret"),
+        )
+    }
 }
