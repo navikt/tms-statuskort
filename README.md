@@ -2,7 +2,7 @@
 
 Tjeneste for statuskort på Min side. Konsumerer statuskort-events fra Kafka og lagrer dem i PostgreSQL.
 
-> Statusen nå er en basestruktur (Kafka-konsument + database). Forretningslogikk og API kommer senere.
+> Statusen nå er en basestruktur (Kafka-konsument + database) med håndtering av opprett/oppdater/inaktiver. API kommer senere.
 
 ## Arkitektur
 
@@ -12,7 +12,13 @@ Tjeneste for statuskort på Min side. Konsumerer statuskort-events fra Kafka og 
 
 ## Eventtyper appen håndterer
 
-- **statuskort**: Lytter etter statuskort-events. (Håndtering ikke implementert ennå.)
+Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
+
+- **opprett**: Oppretter nytt statuskort (`statuskortId`, `ident`, `innhold`, `sensitivitet`, `produsent`). Duplikat `statuskortId` ignoreres.
+- **oppdater**: Oppdaterer `innhold` på et eksisterende statuskort (`statuskortId`, `innhold`). Ukjent `statuskortId` gir feilet melding.
+- **inaktiver**: Inaktiverer et statuskort (`statuskortId`). Allerede inaktivt kort er idempotent; ukjent kort gir feilet melding.
+
+> Feil som forventes (mangler kort, duplikat) kastes som `MessageException` og gir en kontrollert skip (logges, offset committes, ingen retry).
 
 ## Utvikling
 

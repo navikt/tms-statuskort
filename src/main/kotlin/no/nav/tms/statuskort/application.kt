@@ -3,8 +3,10 @@ package no.nav.tms.statuskort
 import no.nav.tms.common.postgres.Postgres
 import no.nav.tms.kafka.application.KafkaApplication
 import no.nav.tms.statuskort.setup.Environment
+import no.nav.tms.statuskort.statuskort.InaktiverStatuskortSubscriber
+import no.nav.tms.statuskort.statuskort.OppdaterStatuskortSubscriber
+import no.nav.tms.statuskort.statuskort.OpprettStatuskortSubscriber
 import no.nav.tms.statuskort.statuskort.StatuskortRepository
-import no.nav.tms.statuskort.statuskort.StatuskortSubscriber
 import org.flywaydb.core.Flyway
 
 fun main() {
@@ -20,7 +22,9 @@ fun main() {
         }
 
         subscribers(
-            StatuskortSubscriber(statuskortRepository),
+            OpprettStatuskortSubscriber(statuskortRepository),
+            OppdaterStatuskortSubscriber(statuskortRepository),
+            InaktiverStatuskortSubscriber(statuskortRepository),
         )
 
         onStartup {
