@@ -6,6 +6,7 @@ import java.time.ZonedDateTime
 data class Statuskort(
     val statuskortId: String,
     val ident: String,
+    val tjeneste: String,
     val innhold: Innhold,
     val sensitivitet: Sensitivitet,
     val produsent: Produsent,

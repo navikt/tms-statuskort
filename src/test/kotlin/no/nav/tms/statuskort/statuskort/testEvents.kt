@@ -3,6 +3,7 @@ package no.nav.tms.statuskort.statuskort
 fun opprettEvent(
     statuskortId: String,
     ident: String = "12345678901",
+    tjeneste: String = "dagpenger",
     sensitivitet: String = "high",
     tittel: String = "En tittel",
 ): String = """
@@ -10,6 +11,7 @@ fun opprettEvent(
         "@event_name": "opprett",
         "statuskortId": "$statuskortId",
         "ident": "$ident",
+        "tjeneste": "$tjeneste",
         "innhold": ${innholdJson(tittel)},
         "sensitivitet": "$sensitivitet",
         "produsent": {

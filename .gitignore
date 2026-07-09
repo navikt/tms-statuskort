@@ -5,6 +5,7 @@
 build
 out
 
+# Ignore edior related
 .idea
 *.iml
 

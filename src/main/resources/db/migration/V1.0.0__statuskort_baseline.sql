@@ -2,6 +2,7 @@ create table statuskort
 (
     statuskortId text not null primary key,
     ident        text not null,
+    tjeneste     text not null,
     innhold      jsonb not null,
     sensitivitet text not null,
     produsent    jsonb not null,

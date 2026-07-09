@@ -15,6 +15,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     insert into statuskort(
                         statuskortId,
                         ident,
+                        tjeneste,
                         innhold,
                         sensitivitet,
                         produsent,
@@ -25,6 +26,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     ) values (
                         :statuskortId,
                         :ident,
+                        :tjeneste,
                         :innhold,
                         :sensitivitet,
                         :produsent,
@@ -37,6 +39,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                 mapOf(
                     "statuskortId" to statuskort.statuskortId,
                     "ident" to statuskort.ident,
+                    "tjeneste" to statuskort.tjeneste,
                     "innhold" to statuskort.innhold.toJsonb(objectMapper),
                     "sensitivitet" to statuskort.sensitivitet.name.lowercase(),
                     "produsent" to statuskort.produsent.toJsonb(objectMapper),
@@ -98,6 +101,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
         Statuskort(
             statuskortId = row.string("statuskortId"),
             ident = row.string("ident"),
+            tjeneste = row.string("tjeneste"),
             innhold = row.json("innhold", objectMapper),
             sensitivitet = parseSensitivitet(row.string("sensitivitet")),
             produsent = row.json("produsent", objectMapper),

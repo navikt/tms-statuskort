@@ -27,12 +27,13 @@ class OpprettStatuskortSubscriberTest {
     fun `oppretter statuskort fra opprett-event`() {
         val statuskortId = randomUUID().toString()
 
-        broadcaster.broadcastJson(opprettEvent(statuskortId, tittel = "Min tittel"))
+        broadcaster.broadcastJson(opprettEvent(statuskortId, tjeneste = "dagpenger", tittel = "Min tittel"))
 
         val statuskort = repository.hentStatuskort(statuskortId)
         statuskort.shouldNotBeNull()
         statuskort.statuskortId shouldBe statuskortId
         statuskort.ident shouldBe "12345678901"
+        statuskort.tjeneste shouldBe "dagpenger"
         statuskort.aktiv shouldBe true
         statuskort.inaktivert shouldBe null
         statuskort.sensitivitet shouldBe Sensitivitet.High

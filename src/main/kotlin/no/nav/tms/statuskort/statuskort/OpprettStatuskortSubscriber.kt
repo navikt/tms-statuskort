@@ -20,6 +20,7 @@ class OpprettStatuskortSubscriber(
         .withFields(
             "statuskortId",
             "ident",
+            "tjeneste",
             "innhold",
             "sensitivitet",
             "produsent",
@@ -33,6 +34,7 @@ class OpprettStatuskortSubscriber(
         val statuskort = Statuskort(
             statuskortId = statuskortId,
             ident = jsonMessage["ident"].asText(),
+            tjeneste = jsonMessage["tjeneste"].asText(),
             innhold = objectMapper.treeToValue<Innhold>(jsonMessage["innhold"]),
             sensitivitet = parseSensitivitet(jsonMessage["sensitivitet"].asText()),
             produsent = objectMapper.treeToValue<Produsent>(jsonMessage["produsent"]),
