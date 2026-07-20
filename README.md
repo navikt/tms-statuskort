@@ -2,14 +2,6 @@
 
 Tjeneste for statuskort på Min side. Konsumerer statuskort-events fra Kafka og lagrer dem i PostgreSQL.
 
-> Statusen nå er en basestruktur (Kafka-konsument + database) med håndtering av opprett/oppdater/inaktiver. API kommer senere.
-
-## Arkitektur
-
-- **Kafka-konsument** (`tms-kafka-tools`) som leser fra topic `min-side.statuskort-v1`.
-- **PostgreSQL** med Flyway-migrasjoner for lagring av statuskort.
-- Kjører på Nais i `dev-gcp`.
-
 ## Eventtyper appen håndterer
 
 Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
@@ -65,7 +57,7 @@ val json = StatuskortBuilder.opprett {
 }
 
 // Send `json` på topic min-side.statuskort-v1 med egen KafkaProducer,
-// gjerne med statuskortId som nøkkel.
+// Med statuskortId som nøkkel.
 ```
 
 `produsent` utledes automatisk fra NAIS-miljøvariablene `NAIS_CLUSTER_NAME`,
@@ -86,7 +78,7 @@ settes fra release-navnet (bruk SemVer, f.eks. `1.0.0`).
 
 ## Dokumentasjon
 
-Mer info om Min side finnes i [dokumentasjonen](https://navikt.github.io/tms-dokumentasjon/).
+TODO: skrive dokumentasjon og legge det til her 
 
 ## Henvendelser
 
