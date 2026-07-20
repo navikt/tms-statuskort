@@ -30,7 +30,7 @@ class OpprettStatuskortSubscriber(
         val statuskortId = jsonMessage["statuskortId"].asText()
         log.info { "Opprett-event mottatt for statuskort" }
 
-        val naa = nowAtUtc()
+        val naa = ZonedDateTimeHelper.nowAtUtc()
         val statuskort = Statuskort(
             statuskortId = statuskortId,
             ident = jsonMessage["ident"].asText(),

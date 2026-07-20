@@ -4,19 +4,14 @@ import kotliquery.queryOf
 import no.nav.tms.common.postgres.Postgres
 import no.nav.tms.common.postgres.PostgresDatabase
 import org.flywaydb.core.Flyway
-import org.testcontainers.containers.PostgreSQLContainer
-import org.testcontainers.utility.DockerImageName
+import org.testcontainers.postgresql.PostgreSQLContainer
 
 object LocalPostgresDatabase {
 
-    private val container = PostgreSQLContainer<Nothing>(DockerImageName.parse("postgres:15"))
+    private val container = PostgreSQLContainer("postgres:15").apply { start() }
 
     val instance: PostgresDatabase by lazy {
-        container.start()
-        Postgres.connectToJdbcUrl(container.jdbcUrl) {
-            username = container.username
-            password = container.password
-        }.also { migrate(it) }
+        Postgres.connectToContainer(container).also { migrate(it) }
     }
 
     fun cleanDb(): PostgresDatabase {
@@ -31,5 +26,6 @@ object LocalPostgresDatabase {
             .dataSource(database.dataSource)
             .load()
             .migrate()
+            .let { assert(it.migrationsExecuted == 1) }
     }
 }

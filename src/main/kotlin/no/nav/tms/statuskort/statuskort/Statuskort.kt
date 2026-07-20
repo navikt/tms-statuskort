@@ -1,6 +1,7 @@
 package no.nav.tms.statuskort.statuskort
 
 import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.databind.JsonNode
 import java.time.ZonedDateTime
 
 data class Statuskort(
@@ -47,6 +48,6 @@ data class EventHistorikkRad(
     val statuskortId: String,
     val ident: String,
     val eventType: String,
-    val data: String?,
+    val data: JsonNode?,
     val konsumert: ZonedDateTime,
 )

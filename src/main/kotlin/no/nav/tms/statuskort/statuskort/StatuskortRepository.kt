@@ -1,13 +1,15 @@
 package no.nav.tms.statuskort.statuskort
 
+import com.fasterxml.jackson.databind.JsonNode
 import kotliquery.Row
 import kotliquery.queryOf
+import no.nav.tms.common.postgres.JsonbHelper.json
+import no.nav.tms.common.postgres.JsonbHelper.jsonOrNull
+import no.nav.tms.common.postgres.JsonbHelper.toJsonb
 import no.nav.tms.common.postgres.PostgresDatabase
 import java.util.UUID
 
 class StatuskortRepository(private val database: PostgresDatabase) {
-
-    private val objectMapper = defaultObjectMapper()
 
     fun opprettStatuskort(statuskort: Statuskort) {
         database.update {
@@ -41,9 +43,9 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     "statuskortId" to statuskort.statuskortId,
                     "ident" to statuskort.ident,
                     "tjeneste" to statuskort.tjeneste,
-                    "innhold" to statuskort.innhold.toJsonb(objectMapper),
+                    "innhold" to statuskort.innhold.toJsonb(),
                     "sensitivitet" to statuskort.sensitivitet.name.lowercase(),
-                    "produsent" to statuskort.produsent.toJsonb(objectMapper),
+                    "produsent" to statuskort.produsent.toJsonb(),
                     "aktiv" to statuskort.aktiv,
                     "opprettet" to statuskort.opprettet,
                     "sistEndret" to statuskort.sistEndret,
@@ -64,15 +66,15 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                 """,
                 mapOf(
                     "statuskortId" to statuskortId,
-                    "innhold" to innhold.toJsonb(objectMapper),
-                    "sistEndret" to nowAtUtc(),
+                    "innhold" to innhold.toJsonb(),
+                    "sistEndret" to ZonedDateTimeHelper.nowAtUtc(),
                 )
             )
         }
     }
 
     fun inaktiverStatuskort(statuskortId: String) {
-        val tidspunkt = nowAtUtc()
+        val tidspunkt = ZonedDateTimeHelper.nowAtUtc()
         database.update {
             queryOf(
                 """
@@ -115,8 +117,8 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     "statuskortId" to statuskortId,
                     "ident" to ident,
                     "eventType" to eventType,
-                    "data" to data?.toJsonb(objectMapper),
-                    "konsumert" to nowAtUtc(),
+                    "data" to data?.toJsonb(),
+                    "konsumert" to ZonedDateTimeHelper.nowAtUtc(),
                 )
             )
         }
@@ -133,7 +135,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     statuskortId = row.string("statuskortId"),
                     ident = row.string("ident"),
                     eventType = row.string("eventType"),
-                    data = row.stringOrNull("data"),
+                    data = row.jsonOrNull<JsonNode>("data"),
                     konsumert = row.zonedDateTime("konsumert"),
                 )
             }
@@ -152,9 +154,9 @@ class StatuskortRepository(private val database: PostgresDatabase) {
             statuskortId = row.string("statuskortId"),
             ident = row.string("ident"),
             tjeneste = row.string("tjeneste"),
-            innhold = row.json("innhold", objectMapper),
+            innhold = row.json("innhold"),
             sensitivitet = parseSensitivitet(row.string("sensitivitet")),
-            produsent = row.json("produsent", objectMapper),
+            produsent = row.json("produsent"),
             aktiv = row.boolean("aktiv"),
             inaktivert = row.zonedDateTimeOrNull("inaktivert"),
             opprettet = row.zonedDateTime("opprettet"),
