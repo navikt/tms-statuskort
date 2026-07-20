@@ -17,9 +17,14 @@ create index statuskort_opprettet on statuskort (opprettet);
 
 create table statuskort_event_historikk
 (
-    statuskortId text not null,
-    ident text not null,
-    eventType text not null,
+    hendelsesId   text not null primary key,
+    statuskortId  text not null,
+    ident         text not null,
+    eventType     text not null,
+    data          jsonb,
     konsumert timestamp with time zone not null
+
 );
+
+create index statuskort_historikk_statuskortId on statuskort_event_historikk (statuskortId);
 create index statuskort_historikk_ident on statuskort_event_historikk (ident);

@@ -46,6 +46,7 @@ class OpprettStatuskortSubscriber(
 
         try {
             repository.opprettStatuskort(statuskort)
+            repository.loggEvent(statuskort.statuskortId, statuskort.ident, "opprett", statuskort.innhold)
             log.info { "Opprettet statuskort etter event fra kafka" }
         } catch (e: UniqueConstraintException) {
             log.info { "Ignorerte duplikat statuskort" }

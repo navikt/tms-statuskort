@@ -3,6 +3,7 @@ package no.nav.tms.statuskort.statuskort
 import kotliquery.Row
 import kotliquery.queryOf
 import no.nav.tms.common.postgres.PostgresDatabase
+import java.util.UUID
 
 class StatuskortRepository(private val database: PostgresDatabase) {
 
@@ -88,6 +89,55 @@ class StatuskortRepository(private val database: PostgresDatabase) {
             )
         }
     }
+
+    fun loggEvent(statuskortId: String, ident: String, eventType: String, data: Any? = null) {
+        database.update {
+            queryOf(
+                """
+                    insert into statuskort_event_historikk(
+                        hendelsesId,
+                        statuskortId,
+                        ident,
+                        eventType,
+                        data,
+                        konsumert
+                    ) values (
+                        :hendelsesId,
+                        :statuskortId,
+                        :ident,
+                        :eventType,
+                        :data,
+                        :konsumert
+                    )
+                """,
+                mapOf(
+                    "hendelsesId" to UUID.randomUUID().toString(),
+                    "statuskortId" to statuskortId,
+                    "ident" to ident,
+                    "eventType" to eventType,
+                    "data" to data?.toJsonb(objectMapper),
+                    "konsumert" to nowAtUtc(),
+                )
+            )
+        }
+    }
+
+    fun hentEventHistorikk(statuskortId: String): List<EventHistorikkRad> =
+        database.list {
+            queryOf(
+                "select * from statuskort_event_historikk where statuskortId = :statuskortId order by konsumert",
+                mapOf("statuskortId" to statuskortId)
+            ).map { row ->
+                EventHistorikkRad(
+                    hendelsesId = row.string("hendelsesId"),
+                    statuskortId = row.string("statuskortId"),
+                    ident = row.string("ident"),
+                    eventType = row.string("eventType"),
+                    data = row.stringOrNull("data"),
+                    konsumert = row.zonedDateTime("konsumert"),
+                )
+            }
+        }
 
     fun hentStatuskort(statuskortId: String): Statuskort? =
         database.singleOrNull {

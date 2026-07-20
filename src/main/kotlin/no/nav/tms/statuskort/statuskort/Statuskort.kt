@@ -41,3 +41,12 @@ data class Produsent(
     val namespace: String,
     val appnavn: String,
 )
+
+data class EventHistorikkRad(
+    val hendelsesId: String,
+    val statuskortId: String,
+    val ident: String,
+    val eventType: String,
+    val data: String?,
+    val konsumert: ZonedDateTime,
+)

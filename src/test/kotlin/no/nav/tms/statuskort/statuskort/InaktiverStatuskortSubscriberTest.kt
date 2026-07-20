@@ -35,6 +35,11 @@ class InaktiverStatuskortSubscriberTest {
         statuskort.shouldNotBeNull()
         statuskort.aktiv shouldBe false
         statuskort.inaktivert.shouldNotBeNull()
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        val inaktiverHistorikk = historikk.filter { it.eventType == "inaktiver" }
+        inaktiverHistorikk.size shouldBe 1
+        inaktiverHistorikk[0].statuskortId shouldBe statuskortId
     }
 
     @Test
@@ -50,6 +55,10 @@ class InaktiverStatuskortSubscriberTest {
         statuskort.aktiv shouldBe false
 
         broadcaster.history().allFailedOutcomes(InaktiverStatuskortSubscriber::class).size shouldBe 0
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        val inaktiverHistorikk = historikk.filter { it.eventType == "inaktiver" }
+        inaktiverHistorikk.size shouldBe 2
     }
 
     @Test

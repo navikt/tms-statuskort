@@ -33,6 +33,7 @@ class OppdaterStatuskortSubscriber(
 
         val innhold = objectMapper.treeToValue<Innhold>(jsonMessage["innhold"])
         repository.oppdaterInnhold(statuskort.statuskortId, innhold)
+        repository.loggEvent(statuskort.statuskortId, statuskort.ident, "oppdater", innhold)
         log.info { "Oppdaterte innhold på statuskort etter event fra kafka" }
     }
 }

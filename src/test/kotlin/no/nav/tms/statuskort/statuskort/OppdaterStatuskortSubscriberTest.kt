@@ -37,6 +37,12 @@ class OppdaterStatuskortSubscriberTest {
         statuskort.innhold.nynorsk.tittel shouldBe "Etter"
         statuskort.innhold.engelsk.tittel shouldBe "Etter"
         statuskort.aktiv shouldBe true
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        val oppdaterHistorikk = historikk.filter { it.eventType == "oppdater" }
+        oppdaterHistorikk.size shouldBe 1
+        oppdaterHistorikk[0].statuskortId shouldBe statuskortId
+        oppdaterHistorikk[0].data.shouldNotBeNull()
     }
 
     @Test

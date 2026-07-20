@@ -39,6 +39,13 @@ class OpprettStatuskortSubscriberTest {
         statuskort.sensitivitet shouldBe Sensitivitet.High
         statuskort.innhold.bokmaal.tittel shouldBe "Min tittel"
         statuskort.produsent.namespace shouldBe "min-side"
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        historikk.size shouldBe 1
+        historikk[0].eventType shouldBe "opprett"
+        historikk[0].statuskortId shouldBe statuskortId
+        historikk[0].ident shouldBe "12345678901"
+        historikk[0].data.shouldNotBeNull()
     }
 
     @Test
@@ -58,5 +65,8 @@ class OpprettStatuskortSubscriberTest {
             it.shouldNotBeNull()
             it.cause::class shouldBe DuplikatStatuskortException::class
         }
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        historikk.size shouldBe 1
     }
 }
