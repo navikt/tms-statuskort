@@ -31,8 +31,7 @@ class InaktiverStatuskortSubscriber(
             repository.loggEvent(statuskort.statuskortId, statuskort.ident, "inaktiver")
             log.info { "Inaktiverte statuskort etter event fra kafka" }
         } else {
-            repository.loggEvent(statuskort.statuskortId, statuskort.ident, "inaktiver")
-            log.info { "Behandlet inaktiver-event for allerede inaktivt statuskort" }
+            log.warn { "Mottatt inaktiver-event for allerede inaktivert event"}
         }
     }
 }

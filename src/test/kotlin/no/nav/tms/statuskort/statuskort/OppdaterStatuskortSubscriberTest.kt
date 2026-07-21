@@ -60,4 +60,27 @@ class OppdaterStatuskortSubscriberTest {
             it.cause::class shouldBe StatuskortIkkeFunnetException::class
         }
     }
+
+    @Test
+    fun `forkaster oppdater-event for inaktivert statuskort`() {
+        val statuskortId = randomUUID().toString()
+        broadcaster.broadcastJson(opprettEvent(statuskortId, tittel = "Før"))
+        repository.inaktiverStatuskort(statuskortId)
+
+        broadcaster.broadcastJson(oppdaterEvent(statuskortId, tittel = "Etter"))
+
+        val statuskort = repository.hentStatuskort(statuskortId)
+        statuskort.shouldNotBeNull()
+        statuskort.innhold.bokmaal.tittel shouldBe "Før"
+
+        broadcaster.history().findFailedOutcome(OppdaterStatuskortSubscriber::class) {
+            it["statuskortId"].asText() == statuskortId
+        }.let {
+            it.shouldNotBeNull()
+            it.cause::class shouldBe StatuskortInaktivtException::class
+        }
+
+        val historikk = repository.hentEventHistorikk(statuskortId)
+        historikk.none { it.eventType == "oppdater" } shouldBe true
+    }
 }

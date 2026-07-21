@@ -58,7 +58,7 @@ class InaktiverStatuskortSubscriberTest {
 
         val historikk = repository.hentEventHistorikk(statuskortId)
         val inaktiverHistorikk = historikk.filter { it.eventType == "inaktiver" }
-        inaktiverHistorikk.size shouldBe 2
+        inaktiverHistorikk.size shouldBe 1
     }
 
     @Test

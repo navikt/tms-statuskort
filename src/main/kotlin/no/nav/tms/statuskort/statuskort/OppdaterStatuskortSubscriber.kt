@@ -31,6 +31,11 @@ class OppdaterStatuskortSubscriber(
                 throw StatuskortIkkeFunnetException()
             }
 
+        if (!statuskort.aktiv) {
+            log.warn { "Avviste oppdatering av inaktivert statuskort" }
+            throw StatuskortInaktivtException()
+        }
+
         val innhold = objectMapper.treeToValue<Innhold>(jsonMessage["innhold"])
         repository.oppdaterInnhold(statuskort.statuskortId, innhold)
         repository.loggEvent(statuskort.statuskortId, statuskort.ident, "oppdater", innhold)
@@ -39,3 +44,5 @@ class OppdaterStatuskortSubscriber(
 }
 
 class StatuskortIkkeFunnetException : MessageException("Fant ikke statuskort som skulle oppdateres")
+
+class StatuskortInaktivtException : MessageException("Kan ikke oppdatere et inaktivert statuskort")

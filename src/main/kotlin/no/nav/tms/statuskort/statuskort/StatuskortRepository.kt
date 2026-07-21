@@ -62,7 +62,7 @@ class StatuskortRepository(private val database: PostgresDatabase) {
                     update statuskort set
                         innhold = :innhold,
                         sistEndret = :sistEndret
-                    where statuskortId = :statuskortId
+                    where statuskortId = :statuskortId and aktiv = true
                 """,
                 mapOf(
                     "statuskortId" to statuskortId,
