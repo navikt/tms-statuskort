@@ -28,7 +28,7 @@ class OpprettStatuskortSubscriber(
 
     override suspend fun receive(jsonMessage: JsonMessage) {
         val statuskortId = jsonMessage["statuskortId"].asText()
-        log.info { "Opprett-event mottatt for statuskort" }
+        log.info { "Opprett-event mottatt for statuskort $statuskortId" }
 
         val naa = ZonedDateTimeHelper.nowAtUtc()
         val statuskort = Statuskort(
@@ -47,9 +47,9 @@ class OpprettStatuskortSubscriber(
         try {
             repository.opprettStatuskort(statuskort)
             repository.loggEvent(statuskort.statuskortId, statuskort.ident, "opprett", statuskort.innhold)
-            log.info { "Opprettet statuskort etter event fra kafka" }
+            log.info { "Opprettet statuskort $statuskortId etter event fra kafka" }
         } catch (e: UniqueConstraintException) {
-            log.info { "Ignorerte duplikat statuskort" }
+            log.info { "Ignorerte duplikat statuskort $statuskortId" }
             throw DuplikatStatuskortException()
         }
     }

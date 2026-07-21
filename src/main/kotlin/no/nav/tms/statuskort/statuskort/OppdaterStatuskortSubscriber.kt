@@ -23,23 +23,23 @@ class OppdaterStatuskortSubscriber(
 
     override suspend fun receive(jsonMessage: JsonMessage) {
         val statuskortId = jsonMessage["statuskortId"].asText()
-        log.info { "Oppdater-event mottatt for statuskort" }
+        log.info { "Oppdater-event mottatt for statuskort $statuskortId" }
 
         val statuskort = repository.hentStatuskort(statuskortId)
             ?: run {
-                log.warn { "Fant ikke statuskort å oppdatere" }
+                log.warn { "Fant ikke statuskort $statuskortId å oppdatere" }
                 throw StatuskortIkkeFunnetException()
             }
 
         if (!statuskort.aktiv) {
-            log.warn { "Avviste oppdatering av inaktivert statuskort" }
+            log.warn { "Avviste oppdatering av inaktivert statuskort $statuskortId" }
             throw StatuskortInaktivtException()
         }
 
         val innhold = objectMapper.treeToValue<Innhold>(jsonMessage["innhold"])
         repository.oppdaterInnhold(statuskort.statuskortId, innhold)
         repository.loggEvent(statuskort.statuskortId, statuskort.ident, "oppdater", innhold)
-        log.info { "Oppdaterte innhold på statuskort etter event fra kafka" }
+        log.info { "Oppdaterte innhold på statuskort $statuskortId etter event fra kafka" }
     }
 }
 

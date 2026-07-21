@@ -18,20 +18,20 @@ class InaktiverStatuskortSubscriber(
 
     override suspend fun receive(jsonMessage: JsonMessage) {
         val statuskortId = jsonMessage["statuskortId"].asText()
-        log.info { "Inaktiver-event mottatt for statuskort" }
+        log.info { "Inaktiver-event mottatt for statuskort $statuskortId" }
 
         val statuskort = repository.hentStatuskort(statuskortId)
             ?: run {
-                log.warn { "Fant ikke statuskort å inaktivere" }
+                log.warn { "Fant ikke statuskort $statuskortId å inaktivere" }
                 throw StatuskortInaktiveringMissingException()
             }
 
         if (statuskort.aktiv) {
             repository.inaktiverStatuskort(statuskort.statuskortId)
             repository.loggEvent(statuskort.statuskortId, statuskort.ident, "inaktiver")
-            log.info { "Inaktiverte statuskort etter event fra kafka" }
+            log.info { "Inaktiverte statuskort $statuskortId etter event fra kafka" }
         } else {
-            log.warn { "Mottatt inaktiver-event for allerede inaktivert event"}
+            log.warn { "Mottatt inaktiver-event for allerede inaktivert statuskort $statuskortId" }
         }
     }
 }
