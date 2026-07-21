@@ -10,8 +10,6 @@ Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
 - **oppdater**: Oppdaterer `innhold` på et eksisterende statuskort (`statuskortId`, `innhold`). Ukjent `statuskortId` gir feilet melding. Inaktivert statuskort kan ikke oppdateres og gir feilet melding.
 - **inaktiver**: Inaktiverer et statuskort (`statuskortId`).
 
-> Feil som forventes (mangler kort, duplikat) kastes som `MessageException` og gir en kontrollert skip (logges, offset committes, ingen retry).
-
 ## API
 
 Appen eksponerer et REST-endepunkt for å hente aktive statuskort for
