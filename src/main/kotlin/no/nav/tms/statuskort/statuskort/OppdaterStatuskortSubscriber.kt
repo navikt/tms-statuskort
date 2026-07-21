@@ -3,7 +3,7 @@ package no.nav.tms.statuskort.statuskort
 import com.fasterxml.jackson.module.kotlin.treeToValue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.tms.kafka.application.JsonMessage
-import no.nav.tms.kafka.application.MessageException
+import no.nav.tms.kafka.application.SkippableMessageException
 import no.nav.tms.kafka.application.Subscriber
 import no.nav.tms.kafka.application.Subscription
 
@@ -43,6 +43,6 @@ class OppdaterStatuskortSubscriber(
     }
 }
 
-class StatuskortIkkeFunnetException : MessageException("Fant ikke statuskort som skulle oppdateres")
+class StatuskortIkkeFunnetException : SkippableMessageException("Fant ikke statuskort som skulle oppdateres")
 
-class StatuskortInaktivtException : MessageException("Kan ikke oppdatere et inaktivert statuskort")
+class StatuskortInaktivtException : SkippableMessageException("Kan ikke oppdatere et inaktivert statuskort")

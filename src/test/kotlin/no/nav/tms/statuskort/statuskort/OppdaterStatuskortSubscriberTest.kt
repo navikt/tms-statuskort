@@ -53,7 +53,7 @@ class OppdaterStatuskortSubscriberTest {
 
         repository.hentStatuskort(statuskortId) shouldBe null
 
-        broadcaster.history().findFailedOutcome(OppdaterStatuskortSubscriber::class) {
+        broadcaster.history().findSkippedOutcome(OppdaterStatuskortSubscriber::class) {
             it["statuskortId"].asText() == statuskortId
         }.let {
             it.shouldNotBeNull()
@@ -73,7 +73,7 @@ class OppdaterStatuskortSubscriberTest {
         statuskort.shouldNotBeNull()
         statuskort.innhold.bokmaal.tittel shouldBe "Før"
 
-        broadcaster.history().findFailedOutcome(OppdaterStatuskortSubscriber::class) {
+        broadcaster.history().findSkippedOutcome(OppdaterStatuskortSubscriber::class) {
             it["statuskortId"].asText() == statuskortId
         }.let {
             it.shouldNotBeNull()

@@ -11,7 +11,7 @@ object LocalPostgresDatabase {
     private val container = PostgreSQLContainer("postgres:15").apply { start() }
 
     val instance: PostgresDatabase by lazy {
-        Postgres.connectToContainer(container).also { migrate(it) }
+        Postgres.connectToContainer(container).also { migrate(it, expectedMigrations = 1) }
     }
 
     fun cleanDb(): PostgresDatabase {
@@ -20,12 +20,12 @@ object LocalPostgresDatabase {
         return instance
     }
 
-    private fun migrate(database: PostgresDatabase) {
+    private fun migrate(database: PostgresDatabase, expectedMigrations: Int) {
         Flyway.configure()
             .connectRetries(3)
             .dataSource(database.dataSource)
             .load()
             .migrate()
-            .let { assert(it.migrationsExecuted == 1) }
+            .let { assert(it.migrationsExecuted == expectedMigrations) }
     }
 }

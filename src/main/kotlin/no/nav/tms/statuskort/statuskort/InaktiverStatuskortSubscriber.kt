@@ -2,7 +2,7 @@ package no.nav.tms.statuskort.statuskort
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.tms.kafka.application.JsonMessage
-import no.nav.tms.kafka.application.MessageException
+import no.nav.tms.kafka.application.SkippableMessageException
 import no.nav.tms.kafka.application.Subscriber
 import no.nav.tms.kafka.application.Subscription
 
@@ -36,4 +36,4 @@ class InaktiverStatuskortSubscriber(
     }
 }
 
-class StatuskortInaktiveringMissingException : MessageException("Fant ikke statuskort som skulle inaktiveres")
+class StatuskortInaktiveringMissingException : SkippableMessageException("Fant ikke statuskort som skulle inaktiveres")

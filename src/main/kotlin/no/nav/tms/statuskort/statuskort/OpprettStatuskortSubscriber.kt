@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.treeToValue
 import io.github.oshai.kotlinlogging.KotlinLogging
 import no.nav.tms.common.postgres.UniqueConstraintException
 import no.nav.tms.kafka.application.JsonMessage
-import no.nav.tms.kafka.application.MessageException
+import no.nav.tms.kafka.application.SkippableMessageException
 import no.nav.tms.kafka.application.Subscriber
 import no.nav.tms.kafka.application.Subscription
 
@@ -55,4 +55,4 @@ class OpprettStatuskortSubscriber(
     }
 }
 
-class DuplikatStatuskortException : MessageException("Statuskort med samme statuskortId finnes allerede")
+class DuplikatStatuskortException : SkippableMessageException("Statuskort med samme statuskortId finnes allerede")

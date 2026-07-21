@@ -54,7 +54,7 @@ class InaktiverStatuskortSubscriberTest {
         statuskort.shouldNotBeNull()
         statuskort.aktiv shouldBe false
 
-        broadcaster.history().allFailedOutcomes(InaktiverStatuskortSubscriber::class).size shouldBe 0
+        broadcaster.history().allSkippedOutcomes(InaktiverStatuskortSubscriber::class).size shouldBe 0
 
         val historikk = repository.hentEventHistorikk(statuskortId)
         val inaktiverHistorikk = historikk.filter { it.eventType == "inaktiver" }
@@ -69,7 +69,7 @@ class InaktiverStatuskortSubscriberTest {
 
         repository.hentStatuskort(statuskortId) shouldBe null
 
-        broadcaster.history().findFailedOutcome(InaktiverStatuskortSubscriber::class) {
+        broadcaster.history().findSkippedOutcome(InaktiverStatuskortSubscriber::class) {
             it["statuskortId"].asText() == statuskortId
         }.let {
             it.shouldNotBeNull()

@@ -6,7 +6,7 @@ Tjeneste for statuskort på Min side. Konsumerer statuskort-events fra Kafka og 
 
 Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
 
-- **opprett**: Oppretter nytt statuskort (`statuskortId`, `ident`, `innhold`, `sensitivitet`, `produsent`). Duplikat `statuskortId` ignoreres.
+- **opprett**: Oppretter nytt statuskort (`statuskortId`, `ident`, `tjeneste`, `innhold`, `sensitivitet`, `produsent`). Duplikat `statuskortId` ignoreres.
 - **oppdater**: Oppdaterer `innhold` på et eksisterende statuskort (`statuskortId`, `innhold`). Ukjent `statuskortId` gir feilet melding. Inaktivert statuskort kan ikke oppdateres og gir feilet melding.
 - **inaktiver**: Inaktiverer et statuskort (`statuskortId`). Allerede inaktivt kort er idempotent; ukjent kort gir feilet melding.
 

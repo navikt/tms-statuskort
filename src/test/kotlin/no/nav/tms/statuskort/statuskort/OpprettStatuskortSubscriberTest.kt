@@ -59,7 +59,7 @@ class OpprettStatuskortSubscriberTest {
         statuskort.shouldNotBeNull()
         statuskort.innhold.bokmaal.tittel shouldBe "Original"
 
-        broadcaster.history().findFailedOutcome(OpprettStatuskortSubscriber::class) {
+        broadcaster.history().findSkippedOutcome(OpprettStatuskortSubscriber::class) {
             it["statuskortId"].asText() == statuskortId
         }.let {
             it.shouldNotBeNull()

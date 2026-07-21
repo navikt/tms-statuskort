@@ -26,7 +26,6 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
-  leaderElection: true
   replicas:
     min: 2
     max: 4
