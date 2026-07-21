@@ -21,7 +21,16 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: java
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+  tokenx:
+    enabled: true
   accessPolicy:
+    inbound:
+      rules:
+        - application: tms-min-side
     outbound:
       rules:
         - application: logging

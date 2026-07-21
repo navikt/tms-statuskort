@@ -2,7 +2,7 @@ package no.nav.tms.statuskort.statuskort
 
 fun opprettEvent(
     statuskortId: String,
-    ident: String = "12345678901",
+    ident: String = "00011",
     tjeneste: String = "dagpenger",
     sensitivitet: String = "high",
     tittel: String = "En tittel",

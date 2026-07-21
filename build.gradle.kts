@@ -37,6 +37,7 @@ dependencies {
     implementation(Ktor.Server.core)
     implementation(Ktor.Server.netty)
     implementation(Ktor.Server.statusPages)
+    implementation(Ktor.Server.contentNegotiation)
     implementation(Ktor.Server.auth)
     implementation(Ktor.Server.authJwt)
     implementation(Ktor.Client.contentNegotiation)
@@ -46,10 +47,12 @@ dependencies {
     implementation(Postgresql.postgresql)
     implementation(TmsCommonLib.utils)
     implementation(TmsCommonLib.kubernetes)
+    implementation(TmsCommonLib.metrics)
     implementation(TmsCommonLib.observability)
     implementation(TmsCommonLib.postgres)
     implementation(TmsCommonLib.teamLogger)
     implementation(TmsKafkaTools.kafkaApplication)
+    implementation(TmsKtorTokenSupport.userTokenVerification)
     implementation(Prometheus.metricsCore)
 
     testImplementation(JunitPlatform.launcher)
@@ -59,6 +62,8 @@ dependencies {
     testImplementation(TestContainers.postgresql)
     testImplementation(Kotest.runnerJunit5)
     testImplementation(Kotest.assertionsCore)
+    testImplementation(TmsKtorTokenSupport.userTokenVerificationMock)
+    testImplementation(Ktor.Test.serverTestHost)
 }
 
 application {

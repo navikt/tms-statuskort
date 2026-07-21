@@ -32,7 +32,7 @@ class OpprettStatuskortSubscriberTest {
         val statuskort = repository.hentStatuskort(statuskortId)
         statuskort.shouldNotBeNull()
         statuskort.statuskortId shouldBe statuskortId
-        statuskort.ident shouldBe "12345678901"
+        statuskort.ident shouldBe "00011"
         statuskort.tjeneste shouldBe "dagpenger"
         statuskort.aktiv shouldBe true
         statuskort.inaktivert shouldBe null
@@ -44,7 +44,7 @@ class OpprettStatuskortSubscriberTest {
         historikk.size shouldBe 1
         historikk[0].eventType shouldBe "opprett"
         historikk[0].statuskortId shouldBe statuskortId
-        historikk[0].ident shouldBe "12345678901"
+        historikk[0].ident shouldBe "00011"
         historikk[0].data.shouldNotBeNull()
     }
 

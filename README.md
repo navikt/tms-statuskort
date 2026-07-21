@@ -12,6 +12,44 @@ Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
 
 > Feil som forventes (mangler kort, duplikat) kastes som `MessageException` og gir en kontrollert skip (logges, offset committes, ingen retry).
 
+## API
+
+Appen eksponerer et brukervendt REST-endepunkt for å hente aktive statuskort for
+innlogget bruker.
+
+### `GET /statuskort`
+
+- **Autentisering:** `userToken` fra `tms-token-support` – aksepterer tokens fra både
+  **ID-porten** og **TokenX**, minimum innloggingsnivå `substantial`. Ident hentes fra
+  tokenet (aldri fra request), og endepunktet returnerer kun kort for den identen.
+- **Query-parameter `locale`** (valgfri): språk for tekstinnholdet. Gyldige verdier er
+  `nb`, `nn` og `en`. Default er `nb` når parameteren utelates, og ukjente verdier faller
+  også tilbake til `nb`.
+- **Sensitivitet og innloggingsnivå:**
+  - Brukere på nivå `high` får alle aktive kort.
+  - Brukere på nivå `substantial` får kun kort med sensitivitet `substantial`. Dersom
+    brukeren har aktive kort med sensitivitet `high` som holdes tilbake, settes
+    `harSkjulteKort` til `true`.
+
+**Eksempel:** `GET /statuskort?locale=nb`
+
+```json
+{
+  "statuskort": [
+    {
+      "id": "<statuskortId>",
+      "tjeneste": "dagpenger",
+      "innhold": {
+        "tittel": "...",
+        "beskrivelse": "...",
+        "link": "..."
+      }
+    }
+  ],
+  "harSkjulteKort": false
+}
+```
+
 ## Bruke biblioteket (kotlin-builder)
 
 Produsent-team som skal sende statuskort-events bruker `kotlin-builder` til å bygge gyldig,

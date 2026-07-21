@@ -7,6 +7,8 @@ import no.nav.tms.statuskort.statuskort.InaktiverStatuskortSubscriber
 import no.nav.tms.statuskort.statuskort.OppdaterStatuskortSubscriber
 import no.nav.tms.statuskort.statuskort.OpprettStatuskortSubscriber
 import no.nav.tms.statuskort.statuskort.StatuskortRepository
+import no.nav.tms.statuskort.statuskort.api.StatuskortApiRepository
+import no.nav.tms.statuskort.statuskort.api.statuskortApi
 import org.flywaydb.core.Flyway
 
 fun main() {
@@ -14,11 +16,16 @@ fun main() {
 
     val database = Postgres.connectToJdbcUrl(environment.jdbcUrl)
     val statuskortRepository = StatuskortRepository(database)
+    val statuskortApiRepository = StatuskortApiRepository(database)
 
     KafkaApplication.build {
         kafkaConfig {
             groupId = environment.groupId
             readTopics(environment.statuskortTopic)
+        }
+
+        ktorModule {
+            statuskortApi(statuskortApiRepository)
         }
 
         subscribers(

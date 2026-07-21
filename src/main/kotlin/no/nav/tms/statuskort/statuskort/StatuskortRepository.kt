@@ -1,9 +1,7 @@
 package no.nav.tms.statuskort.statuskort
 
 import com.fasterxml.jackson.databind.JsonNode
-import kotliquery.Row
 import kotliquery.queryOf
-import no.nav.tms.common.postgres.JsonbHelper.json
 import no.nav.tms.common.postgres.JsonbHelper.jsonOrNull
 import no.nav.tms.common.postgres.JsonbHelper.toJsonb
 import no.nav.tms.common.postgres.PostgresDatabase
@@ -146,21 +144,6 @@ class StatuskortRepository(private val database: PostgresDatabase) {
             queryOf(
                 "select * from statuskort where statuskortId = :statuskortId",
                 mapOf("statuskortId" to statuskortId)
-            ).map(toStatuskort())
+            ).map { it.tilStatuskort() }
         }
-
-    private fun toStatuskort(): (Row) -> Statuskort = { row ->
-        Statuskort(
-            statuskortId = row.string("statuskortId"),
-            ident = row.string("ident"),
-            tjeneste = row.string("tjeneste"),
-            innhold = row.json("innhold"),
-            sensitivitet = parseSensitivitet(row.string("sensitivitet")),
-            produsent = row.json("produsent"),
-            aktiv = row.boolean("aktiv"),
-            inaktivert = row.zonedDateTimeOrNull("inaktivert"),
-            opprettet = row.zonedDateTime("opprettet"),
-            sistEndret = row.zonedDateTime("sistEndret"),
-        )
-    }
 }
