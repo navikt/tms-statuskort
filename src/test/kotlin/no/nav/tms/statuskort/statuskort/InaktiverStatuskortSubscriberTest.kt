@@ -43,7 +43,7 @@ class InaktiverStatuskortSubscriberTest {
     }
 
     @Test
-    fun `inaktiver-event for allerede inaktivt statuskort er idempotent`() {
+    fun `Skipper inaktiver event for allerede inaktivert statuskort`() {
         val statuskortId = randomUUID().toString()
         broadcaster.broadcastJson(opprettEvent(statuskortId))
         broadcaster.broadcastJson(inaktiverEvent(statuskortId))
