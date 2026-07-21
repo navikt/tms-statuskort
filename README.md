@@ -14,22 +14,8 @@ Leser fra topic `min-side.statuskort-v1` og ruter på `@event_name`:
 
 ## API
 
-Appen eksponerer et brukervendt REST-endepunkt for å hente aktive statuskort for
+Appen eksponerer et REST-endepunkt for å hente aktive statuskort for
 innlogget bruker.
-
-### `GET /statuskort`
-
-- **Autentisering:** `userToken` fra `tms-token-support` – aksepterer tokens fra både
-  **ID-porten** og **TokenX**, minimum innloggingsnivå `substantial`. Ident hentes fra
-  tokenet (aldri fra request), og endepunktet returnerer kun kort for den identen.
-- **Query-parameter `locale`** (valgfri): språk for tekstinnholdet. Gyldige verdier er
-  `nb`, `nn` og `en`. Default er `nb` når parameteren utelates, og ukjente verdier faller
-  også tilbake til `nb`.
-- **Sensitivitet og innloggingsnivå:**
-  - Brukere på nivå `high` får alle aktive kort.
-  - Brukere på nivå `substantial` får kun kort med sensitivitet `substantial`. Dersom
-    brukeren har aktive kort med sensitivitet `high` som holdes tilbake, settes
-    `harSkjulteKort` til `true`.
 
 **Eksempel:** `GET /statuskort?locale=nb`
 
@@ -49,64 +35,6 @@ innlogget bruker.
   "harSkjulteKort": false
 }
 ```
-
-## Bruke biblioteket (kotlin-builder)
-
-Produsent-team som skal sende statuskort-events bruker `kotlin-builder` til å bygge gyldig,
-forhåndsvalidert JSON. Biblioteket publiserer ikke til Kafka selv – teamet sender den
-returnerte JSON-strengen på topic `min-side.statuskort-v1` med egen Kafka-produsent
-(anbefalt: bruk `statuskortId` som kafka-nøkkel for å beholde kronologi per kort).
-
-### Legg til avhengigheten
-
-Artefakt: `no.nav.tms.statuskort:kotlin-builder:<versjon>`
-
-Legg til ett av disse repositoriene i prosjektet:
-
-- `https://maven.pkg.github.com/navikt/tms-statuskort` (GitHub Packages – krever autentisering)
-- `https://github-package-registry-mirror.gc.nav.no/cached/maven-release` (NAIS-mirror – krever ingen autentisering)
-
-```kotlin
-repositories {
-    maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-}
-
-dependencies {
-    implementation("no.nav.tms.statuskort:kotlin-builder:<versjon>")
-}
-```
-
-### Eksempel
-
-```kotlin
-import no.nav.tms.statuskort.action.Sensitivitet
-import no.nav.tms.statuskort.builder.StatuskortBuilder
-
-val json = StatuskortBuilder.opprett {
-    statuskortId = "<uuid>"
-    ident = "<fnr>"
-    tjeneste = "dagpenger"
-    sensitivitet = Sensitivitet.High
-    innhold {
-        bokmaal { link = "https://nav.no/nb"; tittel = "Tittel"; beskrivelse = "Beskrivelse" }
-        nynorsk { link = "https://nav.no/nn"; tittel = "Tittel"; beskrivelse = "Skildring" }
-        engelsk { link = "https://nav.no/en"; tittel = "Title"; beskrivelse = "Description" }
-    }
-}
-
-// Send `json` på topic min-side.statuskort-v1 med egen KafkaProducer,
-// Med statuskortId som nøkkel.
-```
-
-`produsent` utledes automatisk fra NAIS-miljøvariablene `NAIS_CLUSTER_NAME`,
-`NAIS_NAMESPACE` og `NAIS_APP_NAME`, eller kan settes eksplisitt. Bruk `oppdater { ... }`
-og `inaktiver { ... }` for de øvrige eventtypene.
-
-### Publisering av biblioteket
-
-Biblioteket publiseres til GitHub Packages av workflowen
-`.github/workflows/builder-publish.yaml` når det opprettes en ny GitHub-release. Versjonen
-settes fra release-navnet (bruk SemVer, f.eks. `1.0.0`).
 
 ## Utvikling
 
