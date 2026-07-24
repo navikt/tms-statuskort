@@ -21,10 +21,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Bygg bibliotek
-        run: ./gradlew :kotlin-builder:build
+        run:  ./gradlew build -x :app:build
 
       - name: Publiser bibliotek
-        run: ./gradlew -Plib_version="$LIB_VERSION" :kotlin-builder:publish
+        run: ./gradlew -Plib_version="$LIB_VERSION" publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LIB_VERSION: ${{ github.event.release.name }}

@@ -44,7 +44,7 @@ spec:
   gcp:
     sqlInstances:
       - name: statuskort
-        type: POSTGRES_15
+        type: POSTGRES_17
         tier: db-f1-micro
         diskType: SSD
         diskSize: 10
@@ -60,11 +60,11 @@ spec:
   resources:
     requests:
       cpu: "20m"
-      memory: 256Mi
+      memory: 128Mi
     limits:
       memory: 1024Mi
   env:
     - name: KAFKA_GROUP_ID
       value: "statuskort-01"
     - name: STATUSKORT_TOPIC
-      value: "min-side.statuskort-v1"
+      value: "min-side.aapen-statuskort-v1"

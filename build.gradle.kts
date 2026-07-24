@@ -1,14 +1,7 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-
 plugins {
-    // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
     kotlin("jvm").version(Kotlin.version)
-
-    id(TmsJarBundling.plugin)
-
-    // Apply the application plugin to add support for building a CLI application.
-    application
 }
+
 
 kotlin {
     jvmToolchain {
@@ -16,66 +9,8 @@ kotlin {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven("https://packages.confluent.io/maven")
-    maven {
-        url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
-    }
-    mavenLocal()
-}
-
-dependencies {
-    implementation(Flyway.core)
-    implementation(Flyway.postgres)
-    implementation(Hikari.cp)
-    implementation(JacksonDatatype.datatypeJsr310)
-    implementation(JacksonDatatype.moduleKotlin)
-    implementation(Kafka.clients)
-    implementation(KotliQuery.kotliquery)
-    implementation(KotlinLogging.logging)
-    implementation(Ktor.Server.core)
-    implementation(Ktor.Server.netty)
-    implementation(Ktor.Server.statusPages)
-    implementation(Ktor.Server.contentNegotiation)
-    implementation(Ktor.Server.auth)
-    implementation(Ktor.Server.authJwt)
-    implementation(Ktor.Client.contentNegotiation)
-    implementation(Ktor.Client.apache5)
-    implementation(Ktor.Serialization.jackson)
-    implementation(Logstash.logbackEncoder)
-    implementation(Postgresql.postgresql)
-    implementation(TmsCommonLib.utils)
-    implementation(TmsCommonLib.kubernetes)
-    implementation(TmsCommonLib.metrics)
-    implementation(TmsCommonLib.observability)
-    implementation(TmsCommonLib.postgres)
-    implementation(TmsCommonLib.teamLogger)
-    implementation(TmsKafkaTools.kafkaApplication)
-    implementation(TmsKtorTokenSupport.userTokenVerification)
-    implementation(Prometheus.metricsCore)
-
-    testImplementation(JunitPlatform.launcher)
-    testImplementation(JunitJupiter.api)
-    testImplementation(JunitJupiter.engine)
-    testImplementation(Mockk.mockk)
-    testImplementation(TestContainers.postgresql)
-    testImplementation(Kotest.runnerJunit5)
-    testImplementation(Kotest.assertionsCore)
-    testImplementation(TmsKtorTokenSupport.userTokenVerificationMock)
-    testImplementation(Ktor.Test.serverTestHost)
-}
-
-application {
-    mainClass.set("no.nav.tms.statuskort.ApplicationKt")
-}
-
 tasks {
-    withType<Test> {
-        useJUnitPlatform()
-        testLogging {
-            exceptionFormat = TestExceptionFormat.FULL
-            events("passed", "skipped", "failed")
-        }
+    jar {
+        enabled = false
     }
 }

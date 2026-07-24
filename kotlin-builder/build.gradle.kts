@@ -21,6 +21,7 @@ repositories {
 }
 
 dependencies {
+    api(project(":statuskort-event"))
     implementation(JacksonDatatype.moduleKotlin)
     implementation(JacksonDatatype.datatypeJsr310)
 

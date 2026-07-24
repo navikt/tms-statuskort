@@ -1,3 +1,3 @@
 rootProject.name = "tms-statuskort"
 
-include("kotlin-builder")
+include("kotlin-builder", "app", "statuskort-event")

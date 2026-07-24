@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
-import no.nav.tms.statuskort.action.InaktiverStatuskort
-import no.nav.tms.statuskort.action.Innhold
-import no.nav.tms.statuskort.action.OppdaterStatuskort
-import no.nav.tms.statuskort.action.OpprettStatuskort
-import no.nav.tms.statuskort.action.Produsent
-import no.nav.tms.statuskort.action.Sensitivitet
-import no.nav.tms.statuskort.action.StatuskortActionVersion
-import no.nav.tms.statuskort.action.Tekstinnhold
+import no.nav.tms.statuskort.event.InaktiverStatuskort
+import no.nav.tms.statuskort.event.Innhold
+import no.nav.tms.statuskort.event.OppdaterStatuskort
+import no.nav.tms.statuskort.event.OpprettStatuskort
+import no.nav.tms.statuskort.event.Produsent
+import no.nav.tms.statuskort.event.Sensitivitet
+import no.nav.tms.statuskort.event.StatuskortEventVersion
+import no.nav.tms.statuskort.event.StatuskortValidationException
+import no.nav.tms.statuskort.event.Tekstinnhold
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -176,8 +177,19 @@ object StatuskortBuilder {
     }
 
     private fun metadata() = mutableMapOf<String, Any>(
-        "version" to StatuskortActionVersion,
+        "version" to StatuskortEventVersion,
         "built_at" to ZonedDateTime.now(ZoneId.of("Z")).truncatedTo(ChronoUnit.MILLIS),
         "builder_lang" to "kotlin"
     )
+
+    private fun requireNotBlank(value: String?, field: String): String {
+        if (value.isNullOrBlank()) {
+            throw StatuskortValidationException("$field kan ikke være tom eller null")
+        }
+        return value
+    }
+
+    private fun <T> requireNotNullField(value: T?, field: String): T {
+        return value ?: throw StatuskortValidationException("$field kan ikke være null")
+    }
 }

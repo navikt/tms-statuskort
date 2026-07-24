@@ -7,7 +7,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import no.nav.tms.statuskort.action.StatuskortValidationException
+import no.nav.tms.statuskort.event.Sensitivitet
+import no.nav.tms.statuskort.event.StatuskortEventVersion
+import no.nav.tms.statuskort.event.StatuskortValidationException
 
 class StatuskortBuilderTest : StringSpec({
 
@@ -52,7 +54,7 @@ class StatuskortBuilderTest : StringSpec({
             statuskortId = "123"
             ident = "12345678901"
             tjeneste = "dagpenger"
-            sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+            sensitivitet = Sensitivitet.High
             innhold(gyldigInnhold())
         }
 
@@ -73,7 +75,7 @@ class StatuskortBuilderTest : StringSpec({
             statuskortId = "123"
             ident = "12345678901"
             tjeneste = "dagpenger"
-            sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.Substantial
+            sensitivitet = Sensitivitet.Substantial
             innhold(gyldigInnhold())
         }
 
@@ -90,13 +92,13 @@ class StatuskortBuilderTest : StringSpec({
             statuskortId = "123"
             ident = "12345678901"
             tjeneste = "dagpenger"
-            sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+            sensitivitet = Sensitivitet.High
             innhold(gyldigInnhold())
         }
 
         val metadata = objectMapper.readTree(json)["metadata"]
 
-        metadata["version"].asText() shouldBe "1.0.0"
+        metadata["version"].asText() shouldBe StatuskortEventVersion
         metadata["builder_lang"].asText() shouldBe "kotlin"
         metadata["built_at"].asText().isNotBlank() shouldBe true
     }
@@ -106,7 +108,7 @@ class StatuskortBuilderTest : StringSpec({
             StatuskortBuilder.opprett {
                 ident = "12345678901"
                 tjeneste = "dagpenger"
-                sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+                sensitivitet = Sensitivitet.High
                 innhold(gyldigInnhold())
             }
         }
@@ -118,7 +120,7 @@ class StatuskortBuilderTest : StringSpec({
                 statuskortId = "123"
                 ident = "   "
                 tjeneste = "dagpenger"
-                sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+                sensitivitet = Sensitivitet.High
                 innhold(gyldigInnhold())
             }
         }
@@ -130,7 +132,7 @@ class StatuskortBuilderTest : StringSpec({
                 statuskortId = "123"
                 ident = "12345678901"
                 tjeneste = "dagpenger"
-                sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+                sensitivitet = Sensitivitet.High
                 innhold {
                     bokmaal {
                         link = "https://nav.no/nb"
@@ -158,7 +160,7 @@ class StatuskortBuilderTest : StringSpec({
                 statuskortId = "123"
                 ident = "12345678901"
                 tjeneste = "dagpenger"
-                sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+                sensitivitet = Sensitivitet.High
                 innhold {
                     bokmaal {
                         link = "https://nav.no/nb"
@@ -179,7 +181,7 @@ class StatuskortBuilderTest : StringSpec({
                 statuskortId = "123"
                 ident = "12345678901"
                 tjeneste = "dagpenger"
-                sensitivitet = no.nav.tms.statuskort.action.Sensitivitet.High
+                sensitivitet = Sensitivitet.High
                 produsent = null
                 innhold(gyldigInnhold())
             }
