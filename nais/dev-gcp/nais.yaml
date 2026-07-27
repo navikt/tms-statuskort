@@ -27,6 +27,8 @@ spec:
       enabled: true
   tokenx:
     enabled: true
+  ingresses:
+    - "https://tms-statuskort.intern.dev.nav.no"
   accessPolicy:
     inbound:
       rules:
