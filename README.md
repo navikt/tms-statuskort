@@ -23,11 +23,9 @@ innlogget bruker.
     {
       "id": "<statuskortId>",
       "tjeneste": "dagpenger",
-      "innhold": {
-        "tittel": "...",
-        "beskrivelse": "...",
-        "link": "..."
-      }
+      "tittel": "...",
+      "beskrivelse": "...",
+      "link": "..."
     }
   ],
   "harSkjulteKort": false

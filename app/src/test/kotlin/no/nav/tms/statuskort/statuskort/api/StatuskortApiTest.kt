@@ -53,8 +53,8 @@ class StatuskortApiTest {
             kort.size() shouldBe 1
             kort[0].get("id").asText() shouldBe "kort-1"
             kort[0].get("tjeneste").asText() shouldBe "dagpenger"
-            kort[0].get("innhold").get("link").asText() shouldBe "https://nav.no/nb"
-            kort[0].get("innhold").has("nb") shouldBe false
+            kort[0].get("link").asText() shouldBe "https://nav.no/nb"
+            kort[0].has("nb") shouldBe false
         }
 
     @Test
@@ -63,10 +63,10 @@ class StatuskortApiTest {
             lagreStatuskort(statuskortId = "kort-1", ident = testIdent)
 
             val nn = client.get("/statuskort?locale=nn").parse()
-            nn.get("statuskort")[0].get("innhold").get("link").asText() shouldBe "https://nav.no/nn"
+            nn.get("statuskort")[0].get("link").asText() shouldBe "https://nav.no/nn"
 
             val en = client.get("/statuskort?locale=en").parse()
-            en.get("statuskort")[0].get("innhold").get("link").asText() shouldBe "https://nav.no/en"
+            en.get("statuskort")[0].get("link").asText() shouldBe "https://nav.no/en"
         }
 
     @Test
@@ -76,7 +76,7 @@ class StatuskortApiTest {
 
             val body = client.get("/statuskort?locale=de").parse()
 
-            body.get("statuskort")[0].get("innhold").get("link").asText() shouldBe "https://nav.no/nb"
+            body.get("statuskort")[0].get("link").asText() shouldBe "https://nav.no/nb"
         }
 
     @Test
