@@ -12,10 +12,6 @@ data class StatuskortResponse(
 data class StatuskortDto(
     val id: String,
     val tjeneste: String,
-    val innhold: TekstinnholdDto,
-)
-
-data class TekstinnholdDto(
     val tittel: String,
     val beskrivelse: String,
     val link: String,
@@ -47,10 +43,8 @@ fun Statuskort.toDto(locale: ApiLocale): StatuskortDto {
     return StatuskortDto(
         id = statuskortId,
         tjeneste = tjeneste,
-        innhold = TekstinnholdDto(
-            tittel = tekst.tittel,
-            beskrivelse = tekst.beskrivelse,
-            link = tekst.link,
-        )
+        tittel = tekst.tittel,
+        beskrivelse = tekst.beskrivelse,
+        link = tekst.link,
     )
 }
